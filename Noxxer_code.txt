@@ -1,0 +1,780 @@
+@echo off
+mode con cols=240 lines=60
+rem Variables
+set "appname=Noxxer"
+set "defaultuser=User"
+set "defaultpass=Password"
+set "owner=Colorowyy"
+set "admin=Administrator"
+set "version=v. 0.7.2"
+set "team=Color Inc."
+set "adminpanelversion=4.1"
+set "adminpassword=NoxxerTSSN"
+set "betatester=DexonRax"
+set "testerpassword=GRM"
+set "defaultfileextension=.nxr"
+set "localhash=j30vqp2kklkad9dajan2kl3NM0ijn3JL2021kmp4jpwlrjwpirnadn0234"
+set "os=Windows System Machine"
+set "filename=color_preset.nxr"
+set "color=0C"
+set "tokens=738"
+set "engine=Engine.rpf"
+rem ----------------------------
+rem Error Codes
+set "error1code=~rem_lib_miss_file~"
+set "error2code=~not_enough_RAM_memory~"
+set "errorfile=error.vbs"
+set "errorinfofile=errorinfo.nxr"
+set "errorsolution_save=errorsolution.nxr"
+set "errortitle_save=errortitle.nxr"
+set "errorcode_save=errorcode.nxr"
+rem ------------------------------
+rem Beta definer
+set "beta_profile=1"
+set "build_number=21A38802"
+set "special_build_number=B-23A0164"
+rem ------------------------------
+setlocal
+set "savefile=saved_instances.nxr"
+if not exist "%savefile%" (
+    echo. > "%savefile%"
+)
+if exist "%savefile%" (
+    call :wczytaj_konta
+)
+if %beta_profile% equ 1 (
+    set "defaulttitle=Beta - - - -"
+    set "defaulttitleshort=Beta"
+) else if %beta_profile% equ 0 (
+    set "defaulttitle=Stable - - - -"
+    set "defaulttitleshort=Stable"
+)
+if exist "%filename%" (
+    set /p "color=" < "%filename%"
+    echo Loaded user configuration.
+) else (
+    echo %color% >> %filename%
+    echo No user configuration detected loading default settings.
+)
+set "data=Engine.drf"
+if not exist "%data%" (
+    goto startup
+)
+if exist "%data%" (
+    goto startupnodownload
+)
+:startup 
+rem Edit this on your own risk, the part "echo." saves text to a specified file even if it don't exist. File is specified after the ">>" element.
+cls
+echo ------------------------
+echo     Starting Setup
+echo ------------------------
+title %appname% %defaulttitle% Setup [DEBUG]
+echo DO NOT CHANGE THE FORMAT OF THE TEXT AND THE NAME OF THE FILE>>saved_instances.nxr
+echo Write format is USERNAME,PASSWORD>>saved_instances.nxr
+echo. %admin%,%adminpassword%>>saved_instances.nxr
+echo. %defaultuser%,%defaultpass%>>saved_instances.nxr
+echo. %betatester%,%testerpassword%>>saved_instances.nxr
+color 0C
+echo Connecting to server
+ping localhost -n 8 >nul
+cls
+echo Initialization Starting Setup
+echo 0%%
+ping localhost -n 8 >nul
+cls
+echo Unpacking %engine%
+echo 1%%
+ping localhost -n 8 >nul
+echo / ENGINE DATA \ >>%engine%
+echo [%appname% Encoder Needed] >>%engine%
+cls
+echo Downloading %engine% data from https://grmproject.com
+echo 4%%
+ping localhost -n 10 >nul
+echo. Write date: %date%, %TIME%>>%engine%
+echo. #init>>%engine%
+echo. import os>>%engine%
+echo. import noxxer_lib>>%engine%
+echo. import admin_priv>>%engine%
+echo. import sel_lib>>%engine%
+echo. import ifymm.nxr.exe>>%engine%
+echo. import command.processor>>%engine%
+echo. import button_extension>>%engine%
+echo. import navbar_by_Olekk>>%engine%
+echo. import custom_titlebar>>%engine%
+echo. import default_windowsiconpackage.pcg >>%engine%
+echo. #main>>%engine%
+echo. let AppName = "%appname%">>%engine%
+echo. let Version = "%version%">>%engine%
+echo. let Tokens = "%tokens%">>%engine%
+echo. let AppIcon = noxxer_icon.ico >>%engine%
+echo. while{beta_profile=1} set title_addition = Beta ~version~ >>%engine%
+echo. $define defaultfileextension = "%defaultfileextension%" >>%engine%
+echo. $define const.gd.nxr {>>%engine%
+echo.   $define lang=binary >>%engine%
+echo.   $define font=windows.default >>%engine%
+echo.   $define char_code = unicode{ >>%engine%
+echo.       let ~unicode_letters~ = ABCDEFGHIJKLMNOPRSTUWVXYZabcdefghijklmnprstuwvxyz >>%engine%
+echo.       let ~unicode_numbers~ = 0123456789>>%engine%
+echo.   }>>%engine%
+echo.   $define default_color = %color% >>%engine%
+echo.   $define Title = %appname% %defaulrtitleshort% %version% >>%engine%
+echo. } >>%engine%
+echo. #window_structure >>%engine%
+echo. $struct command_window.win10 >>%engine%
+echo. let height = 60 px >>%engine%
+echo. let width = 240 px >>%engine%
+echo. $struct nav-bar{ >>%engine%
+echo. 	$define exit ~from btn_extension {padding: 230,0,0; spacing: 3; mode: hold} >>%engine%
+echo. 		for exit set btn.color/bgd {color: ~win10.def~} >>%engine%
+echo. 		for exit set btn.color/fgd {color: ~win10.def~} >>%engine%
+echo. 		for exit set btn.uni {~win10.def_cross~} >>%engine%
+echo. 		for exit set btn.action {if.pressed (head_eof)} >>%engine%
+echo. 		for exit set btn.action {if.hover (color.change: red)} >>%engine%
+echo. 	$define full ~from btn_extension {padding: 214,0,0; spacing: 3; mode: hold} >>%engine%
+echo. 		for full set btn.color/bgd {color: ~win10.def~} >>%engine%
+echo. 		for full set btn.color/fgd {color: ~win10.def~} >>%engine%
+echo. 		for full set btn.uni {~win10.def_square~} >>%engine%
+echo. 		for full set btn.action {if.pressed (window.size=full)} >>%engine%
+echo. 	if window.size=full *replace btn.full = {$define mini ~from btn_extension {padding: 214,0,0; spacing: 3; mode: hold} } >>%engine%
+echo. 		for small set btn.color/bgd {color: ~win10.def~} >>%engine%
+echo. 		for small set btn.color/fgd {color: ~win10.def~} >>%engine%
+echo. 		for small set btn.uni {~win10.def_square-double~} >>%engine%
+echo. 		for small set btn.action {if.pressed (window.size=original)} >>%engine%
+echo.   $define mini ~from btn_extension {padding: 199,0,0; spacing: 45; mode: hold} >>%engine%
+echo. 		for mini set btn.color/bgd {color: ~win10.def~} >>%engine%
+echo. 		for mini set btn.color/fgd {color: ~win10.def~} >>%engine%
+echo. 		for mini set btn.uni {~win10.def_hyphen~} >>%engine%
+echo.   $define title-bar {AppIcon + Title} >>%engine%
+echo.       for title-bar include color/bgd {color: ~win10.def~} >>%engine% 
+echo.       for title-bar include color/fgd {color: ~win10.def~} >>%engine%
+echo.   } >>%engine%
+echo. #command_window.win10 >>%engine%
+echo. 	set color/bgd from ~color~ {bgd = ^%color%*1^} >>%engine%
+echo. 	set color/font from ~color~ {fgd = ^%color%*2^} >>%engine%
+echo. 	$struct view {(nav-bar {position: header; mode: hold}) + input.window} >>%engine%
+echo. 	  for view set menu >>%engine%
+echo. 	  $define menu = noxxer_menu.drf >>%engine%
+echo.	  $define menu-type = keyboardinput >>%engine%
+echo.	  $write noxxer_menu.drf >>%engine%
+echo. ------------------------------------------------>>%engine%
+cls
+echo Encrypting upload
+echo 5%%
+ping localhost -n 12 >nul
+echo. Private userkey: %localhash%>>%engine%
+cls
+echo Sending Request
+echo 6%%
+ping localhost -n 10 >nul
+cls
+echo Recieving Data 1/3
+echo 9%%
+ping localhost -n 2 >nul
+cls
+echo Recieving Data 2/3
+echo 9%%
+ping localhost -n 2 >nul
+cls
+echo Recieving Data 3/3
+echo 10%%
+ping localhost -n 2 >nul
+cls
+echo Setting user preferences
+echo 12%%
+ping localhost -n 6 >nul
+cls
+echo Checking for updates
+echo 15%%
+ping localhost -n 6 >nul
+cls
+echo Saving default Settings 
+echo 17%%
+ping localhost -n 6 >nul
+cls
+echo Creating %defaultfileextension% files
+rem Files with .nxr extension are recognised by %appname% (Noxxer)
+echo 20%%
+ping localhost -n 10 >nul
+cls
+md libraries
+cd libraries
+echo Noxxer files - sel_lib.nxr 10%%
+echo 20%%
+echo.     /Selfbuild Library\>>sel_lib.nxr
+echo. /Constructed by %appname%\ >>sel_lib.nxr
+echo. #098210928104095001921049052149414579891798498719749957294 >>sel_lib.nxr
+echo. #opkqw9ej9212490u2jr2oi109ejr924oirn920p19u4j58943uotj9294>>sel_lib.nxr 
+ping localhost -n 8 >nul
+cls
+echo Noxxer files - sel_lib.nxr 34%%
+echo 22%%
+ping localhost -n 8 >nul
+cls
+echo Noxer files - dynamic.nxr 12%%
+echo 30%%
+ping localhost -n 8 >nul
+echo. /Dynamic Library\>>dynamic.nxr
+cls
+echo Noxer files - dynamic.nxr 70%%
+echo 35%%
+ping localhost -n 8 >nul
+echo. Structured using .nxr compiler>>dynamic.nxr
+cls
+echo Noxer files - dynamic.nxr 99%%
+echo 56%%
+ping localhost -n 8 >nul
+echo. variable_closer>>dynamic.nxr
+cls
+echo Creating library.nxr
+echo [Library Decryptor Needed] >>library.nxr
+echo $define variable >>library.nxr
+echo $define function >>library.nxr
+echo $define loop >>library.nxr
+echo $define class >>library.nxr
+echo $define array >>library.nxr
+echo $define condition >>library.nxr
+echo $define method >>library.nxr
+echo $define parameter >>library.nxr
+echo $define statement >>library.nxr
+echo $define algorithm >>library.nxr
+echo $define debugging >>library.nxr
+echo $define variable scope >>library.nxr
+echo $define inheritance >>library.nxr
+echo $define polymorphism >>library.nxr
+echo $define encapsulation >>library.nxr
+echo $define abstraction >>library.nxr
+echo $define syntax >>library.nxr
+echo $define compiler >>library.nxr
+echo $define interpreter >>library.nxr
+echo $define data type >>library.nxr
+echo $define string >>library.nxr
+echo $define integer >>library.nxr
+echo $define float >>library.nxr
+echo $define boolean >>library.nxr
+echo $define array index >>library.nxr
+echo $define conditional statement >>library.nxr
+echo $define iteration >>library.nxr
+echo $define recursion >>library.nxr
+echo $define object >>library.nxr
+echo $define class hierarchy >>library.nxr
+echo 59%%
+ping localhost -n 15 >nul
+cls
+echo Constructing library
+echo 70%%
+ping localhost -n 4 >nul
+cls
+cd ..
+echo Checking for errors
+echo 70%%
+ping localhost -n 4 >nul
+cls
+echo Installing data package no. 09281
+echo 81%%
+ping localhost -n 4 >nul
+cls
+echo Succesfully connected to network
+echo %tokens% Tokens loaded 
+echo 100%%
+ping localhost -n 15 >nul
+goto startupnodownload
+rem This part only exists for faster checking of admin privilages
+:hiddenstartup
+cls
+echo Entered hidden startup menu for admins
+ping localhost -n 2 >nul
+goto adminpanel
+rem --------------------------------------------------------------
+:startupnodownload
+cls
+title %appname% %version% [DEBUG]
+color %color%
+echo ------------------------
+echo   Powered by GRM Tech
+echo ------------------------
+if "%beta_profile%"=="1" (
+echo Using beta version may harm your PC.
+echo Build Number: %build_number%
+)
+ping localhost -n 4 >nul
+cls
+if "%beta_profile%"=="1" (
+echo Beta software not for public use
+echo Build Number: %build_number%
+)
+echo ------------------------
+echo   Powered by GRM Tech
+echo ------------------------
+echo.
+echo Checking for errors
+ping localhost -n 8 >nul
+if exist "%errorfile%" (
+echo Critical error occured
+ping localhost -n 2 >nul
+goto loading_failure
+) else (
+    echo -------------------------
+    echo    No errors detected
+    echo -------------------------
+    ping localhost -n 2 >nul
+    goto menu
+)
+:menu
+color %color%
+title %appname% %defaulttitleshort% [DEBUG]
+rem These elements are responsible for menu
+cls
+                                                                                                                    
+                                                                                                                    
+echo NNNNNNNN        NNNNNNNN                                                                                            
+echo N:::::::N       N::::::N                                                                                            
+echo N::::::::N      N::::::N                                                                                            
+echo N:::::::::N     N::::::N                                                                                            TM
+echo N::::::::::N    N::::::N   ooooooooooo xxxxxxx      xxxxxxxxxxxxxx      xxxxxxx eeeeeeeeeeee    rrrrr   rrrrrrrrr   
+echo N:::::::::::N   N::::::N oo:::::::::::oox:::::x    x:::::x  x:::::x    x:::::xee::::::::::::ee  r::::rrr:::::::::r  
+echo N:::::::N::::N  N::::::No:::::::::::::::ox:::::x  x:::::x    x:::::x  x:::::xe::::::eeeee:::::eer:::::::::::::::::r 
+echo N::::::N N::::N N::::::No:::::ooooo:::::o x:::::xx:::::x      x:::::xx:::::xe::::::e     e:::::err::::::rrrrr::::::r
+echo N::::::N  N::::N:::::::No::::o     o::::o  x::::::::::x        x::::::::::x e:::::::eeeee::::::e r:::::r     r:::::r
+echo N::::::N   N:::::::::::No::::o     o::::o   x::::::::x          x::::::::x  e:::::::::::::::::e  r:::::r     rrrrrrr     %version%
+echo N::::::N    N::::::::::No::::o     o::::o   x::::::::x          x::::::::x  e::::::eeeeeeeeeee   r:::::r            
+echo N::::::N     N:::::::::No::::o     o::::o  x::::::::::x        x::::::::::x e:::::::e            r:::::r            
+echo N::::::N      N::::::::No:::::ooooo:::::o x:::::xx:::::x      x:::::xx:::::xe::::::::e           r:::::r            
+echo N::::::N       N:::::::No:::::::::::::::ox:::::x  x:::::x    x:::::x  x:::::xe::::::::eeeeeeee   r:::::r            
+echo N::::::N        N::::::N oo:::::::::::oox:::::x    x:::::x  x:::::x    x:::::xee:::::::::::::e   r:::::r            
+echo NNNNNNNN         NNNNNNN   ooooooooooo xxxxxxx      xxxxxxxxxxxxxx      xxxxxxx eeeeeeeeeeeeee   rrrrrrr            
+                                                                                                                    
+                                                                                                                    
+                                                                                                                    
+                                                                                                                    
+
+echo.
+echo.                                                                                                                                                                                                                                
+                                                                                                                    
+if "%beta_profile%"=="1" (
+echo %defaulttitleshort% 
+echo Build Number: %build_number%
+)    
+set "opcja="
+set "blue=1"
+set "reset=9"
+:menu
+echo.
+echo ^| Register a new account   ---- Type 1
+echo ^| Log in to your account   ---- Type 2
+echo.
+echo            Start Menu
+echo  ------------------------------
+echo ^| Credits                  ---- Type 3
+echo ^| Shutdown %appname%          ---- Type 4
+echo ^| Power Off Host PC        ---- Type 5
+
+set /p "opcja=Select> "
+if "%opcja%"=="1" (
+call :rejestracja
+goto menu
+) else if "%opcja%"=="2" (
+call :logowanie
+goto :eof
+) else if "%opcja%"=="3" (
+goto credits 
+) else if "%opcja%"=="4" (
+call :zapisz_konta
+goto :eof
+) else if "%opcja%"=="5" (
+call :zapisz_konta
+shutdown -s -t 20 -c "Powered off by %appname%"
+goto :eof
+) else (
+echo Incorrect option. Try again.
+goto menu
+)
+:credits
+cls
+title %appname% %defaulttitle% Credits
+echo        ------------------------------
+echo                    CREDITS
+echo        ------------------------------
+echo.
+echo Application fundriased by GRM Technology using their experimental engine, customized by %team%.
+echo -----------------------------------------------------------------------------------------------
+echo %team% team:
+echo CEO -- %owner%
+echo Product development -- %betatester%
+echo Programming -- %owner%, Steffen Koenig
+echo UI design -- Daniel Richmann
+echo Testing -- %betatester%, %owner%
+echo Adapting for Windows Machine -- Jezykk
+echo.
+echo Application Data 
+echo Name: %appname% / Version: %version% / Release info: %defaulttitleshort%
+echo.
+echo Join %team% team, apply on our discord
+echo.
+echo ------------------------
+echo Go back to main menu  ---- Type 1
+set /p "credits_select=Select> "
+if "%credits_select%" == "1" goto menu
+:rejestracja
+cls
+title %appname% %defaulttitle% Register [DEBUG]
+echo        ------------------------------
+echo                REGISTRATION
+echo        ------------------------------
+echo.
+set "login="
+set "haslo="
+set /p "login=Login> "
+set /p "haslo=Password> "
+call :sprawdz_dostepnosc_loginu "%login%"
+if errorlevel 1 (
+echo That login has been already taken. Select other.
+goto rejestracja
+)
+echo %login%,%haslo% >> "%savefile%"
+echo Register succesful.
+goto :eof
+:logowanie
+cls
+title %appname% %defaulttitle% Login [DEBUG]
+echo        ------------------------------
+echo                   LOG IN
+echo        ------------------------------
+echo.
+set "login="
+set "password="
+set /p "login=Login> "
+set /p "password=Password> "
+call :sprawdz_logowanie "%login%" "%password%"
+if errorlevel 1 (
+echo Incorrect login or password. Try again.
+ping localhost -n 5 >nul
+goto logowanie
+) else (
+if "%login%"=="%admin%" (
+echo Successfully logged in as %login%.
+ping localhost -n 3 >nul
+goto adminpanel
+) else if "%login%"=="%betatester%" (
+echo Successfully logged in as %betatester%.
+ping localhost -n 3 >nul
+goto Betaloggedin
+) else (
+echo Successfully logged in as %login%.
+ping localhost -n 3 >nul
+goto loggedin
+)
+)
+goto :eof
+:sprawdz_dostepnosc_loginu
+set "login=%~1"
+if not exist "%savefile%" (
+exit /b 0
+)
+for /f "usebackq tokens=1 delims=, " %%a in ("%savefile%") do (
+if "%login%"=="%%a" (
+exit /b 1
+)
+)
+exit /b 0
+:sprawdz_logowanie
+set "login=%~1"
+set "haslo=%~2"
+if not exist "%savefile%" (
+exit /b 1
+)
+for /f "usebackq tokens=1,2 delims=, " %%a in ("%savefile%") do (
+if "%login%"=="%%a" (
+if "%haslo%"=="%%b" (
+exit /b 0
+)
+)
+)
+exit /b 1
+:loggedin
+cls
+title %appname% %defaulttitle% User Panel [DEBUG]
+color %color%
+echo -----------------------------------------------------
+echo -----------------------------------------------------
+echo ^|                   User Panel                                                                                                                                                                                                                                                                                                                        
+echo ^|                Logged In as %login%              
+echo -----------------------------------------------------
+echo -----------------------------------------------------
+echo.
+echo.
+echo Options Available:
+echo ^| Browser       ------ Type 1
+echo ^| Settings      ------ Type 2
+echo ^| Games         ------ Type 3     -- Testing
+echo.
+echo            Shutdown Menu
+echo ----------------------------------
+echo ^| Log off       ------ Type 4
+set /p "opcja2=Select> "
+if "%opcja2%" == "1" goto browser
+if "%opcja2%" == "2" goto settings
+if "%opcja2%" == "3" goto gameslibrary  
+if "%opcja2%" == "4" goto menu
+if "%beta_profile%"=="1" (
+    if "%build_number%"=="%special_build_number%" (
+        if "%opcja2%" == "beta" goto secretbeta
+        if "%opcja2%" == "7" goto virusinjection
+    )
+)  
+:browser
+echo. Started web services at %date%>>log.nxr
+start https://google.com 
+goto loggedin
+:settings
+cls
+title %appname% %defaulttitle% Settings
+echo Settings menu
+echo.
+echo Change Menu color     ---- Type 1
+echo Open Host PC settings ---- Type 2
+echo Return to User Panel  ---- Type 3
+set /p "usersettingsselect=Select> "
+if "%usersettingsselect%" == "1" goto color_config
+if "%usersettingsselect%" == "2" (
+cls
+start control
+ping localhost -n 2 >nul
+echo Opened Control Panel
+ping localhost -n 2 >nul
+goto loggedin
+)
+if "%usersettingsselect%" == "3" goto loggedin
+ping localhost -n 4 >nul
+goto loggedin
+:color_config
+cls
+echo Choose your prefered color
+echo Format: background/text color
+echo Black/Blue    ---- Type 1
+echo Black/Red     ---- Type 2
+echo Black/White   ---- Type 3
+echo Black/Purple  ---- Type 4
+echo More in the next updates
+set /p "color_presetselect=Select> "
+if "%color_presetselect%" == "1" (
+cls
+del %filename%
+echo. 0B>>%filename%
+echo Preset Saved reset the instance to see changes
+ping localhost -n 2 >nul
+goto loggedin
+)
+if "%color_presetselect%" == "2" (
+cls
+del %filename%
+echo. 0C>>%filename%
+echo Preset Saved reset the instance to see changes
+ping localhost -n 2 >nul
+goto loggedin
+)
+if "%color_presetselect%" == "3" (
+cls
+del %filename%
+echo. 0F>>%filename%
+echo Preset Saved reset the instance to see changes
+ping localhost -n 2 >nul
+goto loggedin
+)
+if "%color_presetselect%" == "4" (
+cls
+set "errorcode=noxer_lib_incm_or_inop"
+set "error_desc=Couldnt read written variable due to incomplete or inoperable %appname% library."
+set "errortitle=Unexpected error occured while loading variables"
+set "errorsolution=Check file integrity, when this won't help contact support."
+goto erroroccured
+)
+:gameslibrary
+cls
+echo Testing App Library
+
+
+:adminpanel
+title %appname% %defaulttitle% AdminPanel
+color 0A
+cls
+echo Welcome to your panel %login%
+echo Here in the app control panel %adminpanelversion% you can change values.
+echo.
+echo.
+echo.
+echo Manage users and passwords ----------------- Type 1
+echo Manage web server          ----------------- Type 2
+echo Manage services            ----------------- Type 3
+echo Disable system             ----------------- Type 4 -- There will be no option to repair the system of victim because it will shutdown every 10 sec after startup
+echo Change user options        ----------------- Type 5 -- Not implemented in current version
+echo Extra features             ----------------- Type 6
+echo Log out                    ----------------- Type 7
+set /p adminselect="Select> "
+if %adminselect% == 1 goto userandpassword
+if %adminselect% == 2 goto webservices
+if %adminselect% == 3 goto server
+if %adminselect% == 4 goto systemdisable
+if %adminselect% == 5 goto optionsuser 
+if %adminselect% == 6 goto extras
+if %adminselect% == 7 goto menu 
+:userandpassword
+title %appname% %defaulttitle% Account Manager 
+cls
+echo This panel is for managing the users passwords and logins
+echo 
+echo.
+echo.
+echo Manage users and password       ------------ Type 1
+echo Exit to the previous screen     ------------ Type 2
+set /p userandpasswordselect="Select> "
+if "%userandpasswordselect%"=="1" (
+goto loginy
+) else if "%userandpasswordselect%"=="2" (
+goto adminpanel
+) else (
+echo Nieprawidłowa opcja. Spróbuj ponownie.
+goto adminpanel
+)
+:loginy
+cls 
+echo starting Manager
+ping localhost -n 3 >nul
+cls
+echo loaded
+start saved_instances.nxr
+ping localhost -n 10 >nul
+goto adminpanel
+:webservices
+title %appname% %defaulttitle% Web Services
+cls
+echo Server Hash %random%%random%%random%%random%%random%%random%%random%%random%%random%
+echo Localhost Hash %localhash%
+echo Hashrate %random%%random% b/s
+echo.
+echo.
+echo Get back to adminpanel      ----------------- Type 1
+set /p webservicesselect="Select> "
+if %webservicesselect% == 1 goto adminpanel
+:server 
+cls
+echo %username% PC loged as %login% , current date: %date% 
+echo Application made by 
+:systemdisable
+cls
+title %appname% %defaulttitle% System Settings
+echo Disable the system          ------------ Type 1 -- In development
+echo Exit to adminpanel          ------------ Type 2
+set /p protocolselect="Select> "
+if "%protocolselect%"=="1" (
+goto destroyer
+) else if "%procotolselect%"=="2" (
+goto adminpanel
+) else (
+echo Try again
+goto adminpanel
+)
+:destroyer
+echo Starting Mover
+ping localhost -n 3 >nul
+call mover.bat
+goto protocol
+:extras
+cls
+title %appname% %defaulttitle% Extra Features
+echo These options currently aviable, more in the future:
+echo Noxxer File Encoder/Decoder ------------ Type 1
+echo User Perspective            ------------ Type 2
+echo Exit to adminpanel          ------------ Type 3
+set /p extrasselect="Select> "
+if "%extrasselect%"=="1" (
+goto encoder
+) else if "%extrasselect%"=="2" (
+goto loggedin
+) else if "%extrasselect%"=="3" (
+goto adminpanel
+) else (
+echo Try again
+goto adminpanel
+)
+:encoder
+echo Starting Noxxer Encoder
+ping localhost -n 3 >nul
+call "Noxxer Encoder.bat"
+goto extras
+:Betaloggedin
+cls
+title %appname% %defaulttitle% Tester Version
+color %color%
+echo Welcome to your panel %login%
+echo.
+echo.
+echo Options Aviable:
+echo Browser             ------------ Type 1
+echo User Perspective    ------------ Type 2  
+echo AdminPanel          ------------ Type 3
+echo Log off             ------------ Type 4
+set /p "betaopcja=Select> "
+if %betaopcja% == 1 goto browser
+if %betaopcja% == 2 goto loggedin 
+if %betaopcja% == 3 goto adminpanel
+if %betaopcja% == 4 goto menu
+:erroroccured
+title %appname% %defaulttitle% Error
+cls
+echo %errortitle% >> %errortitle_save%
+echo %errorcode% >> %errorcode_save%
+echo %error_desc% >> %errorinfofile%
+echo %errorsolution% >> %errorsolution_save%
+echo x=msgbox("%errortitle%, Error code: %errorcode%, Description: %error_desc%",1+48+65536,"%appname% %defaulttitleshort%") >%errorfile%
+ping localhost -n 1 >nul
+echo. if x=1 then y=msgbox("Procces stopped, possible solution: %errorsolution%",0+16,"%appname% %defaulttitleshort%") >>%errorfile%
+echo. y=msgbox("Contact support, you won't be able to acces %appname% until problem is solved",0+64,"%appname% %defaulttitleshort%") >>%errorfile%
+ping localhost -n 1 >nul
+echo. if x=2 then z=msgbox("Contact support, you won't be able to acces %appname% until problem is solved",0+64,"%appname% %defaulttitleshort%") >>%errorfile%
+ping localhost -n 2 >nul
+start %errorfile%
+ping localhost -n 5 >nul
+exit
+:virusinjection
+cls
+color 0A 
+title Virus Injection
+set /p "inject=Inject Virus Y/N: "
+if "%inject%" == "Y" goto virus
+if "%inject%" == "N" goto loggedin
+
+
+:secretbeta
+cls
+color %color%
+title %appname% %defaulttitleshort% Menu %build_number%
+echo User Beta Menu
+echo ------------------
+echo.
+echo This is Beta menu only accesible when variable "beta_profile" is set to 1
+echo All users that registered may acces this menu.
+ping localhost -n 10 >nul
+cls
+color 0A
+echo For your information, version 0.0.7.0 and higher contains a virus that can be injected by executing special command in User Panel screen
+echo command is only accesible in a special beta version of %appname% with build numer starting with B-, current build number: "%build-number%"
+:loading_failure
+cls
+title Critical error cannot load app data --------- %appname% %version% %defaulttitleshort%
+set /p "errortitle=" < "%errortitle_save%"
+set /p "errorcode=" < "%errorcode_save%"
+set /p "error_desc=" < "%errorinfofile%"
+set /p "errorsolution=" < "%errorsolution_save%"
+echo %errortitle%
+echo Error code: %errorcode%
+echo. 
+echo Description: %error_desc%
+echo.  
+echo Possible Solution: %errorsolution%
+echo.
+echo You cannot acces %appname% due to that error
+start %errorfile%
+
+pause >nul
